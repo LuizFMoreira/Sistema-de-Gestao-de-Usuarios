@@ -1,29 +1,33 @@
 import { useState } from 'react';
-import type { FormEvent } from 'react'
+import type { FormEvent } from 'react';
 import { api } from '../services/api';
-
+import { isAxiosError } from 'axios'; // Operador lógico para identificar erros HTTP
 
 export function Register() {
-  // Matriz de estados para capturar as entradas do usuário
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mensagem, setMensagem] = useState({ texto: '', erro: false });
 
-  // Função disparada ao submeter a equação (o formulário)
   async function handleRegister(e: FormEvent) {
-    e.preventDefault(); // Impede o recarregamento padrão da página
+    e.preventDefault(); 
 
     try {
-      // Vetor de envio (DTO) exato que o Spring Boot espera
+      // Vetor de envio (DTO)
       await api.post('/usuarios', { nome, email, senha });
       
       setMensagem({ texto: 'Usuário cadastrado com sucesso! 🎉', erro: false });
-      // Limpa os campos após o sucesso
       setNome(''); setEmail(''); setSenha('');
       
     } catch (error) {
-      setMensagem({ texto: 'Erro ao cadastrar. Verifique os dados e tente novamente.', erro: true });
+      // Lógica de extração do erro
+      if (isAxiosError(error) && error.response?.data?.erro) {
+        // Captura a mensagem exata formatada pelo nosso GlobalExceptionHandler do Java
+        setMensagem({ texto: error.response.data.erro, erro: true });
+      } else {
+        // Variável de contingência caso o servidor esteja desligado
+        setMensagem({ texto: 'Erro de conexão com o servidor.', erro: true });
+      }
     }
   }
 
