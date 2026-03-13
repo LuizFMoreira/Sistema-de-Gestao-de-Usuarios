@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { api } from '../services/api';
-import { isAxiosError } from 'axios'; // Operador lógico para identificar erros HTTP
+import { isAxiosError } from 'axios'; // Indetifica erros de http
 
 export function Register() {
   const [nome, setNome] = useState('');
@@ -20,9 +20,9 @@ export function Register() {
       setNome(''); setEmail(''); setSenha('');
       
     } catch (error) {
-      // Lógica de extração do erro
+        // Logica para caso apereça erro
       if (isAxiosError(error) && error.response?.data?.erro) {
-        // Captura a mensagem exata formatada pelo nosso GlobalExceptionHandler do Java
+        //Formatar a mensagem do GlobalExceptionHandler
         setMensagem({ texto: error.response.data.erro, erro: true });
       } else {
         // Variável de contingência caso o servidor esteja desligado
