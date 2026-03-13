@@ -1,6 +1,8 @@
 package com.luizfernando.gestaousuarios.api.dto;
 
-public record LoginRequestDTO(
+//trnsferencia de dados
+public record UsuarioRequestDTO(
+        String nome,
         String email,
         String senha
 ) {
