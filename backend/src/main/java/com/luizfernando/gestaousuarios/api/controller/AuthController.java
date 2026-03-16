@@ -24,13 +24,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO dto) {
-        // 1. Valida e-mail e senha
+        // Valida e-mail e senha
         Usuario usuarioAutenticado = usuarioService.autenticar(dto.email(), dto.senha());
         
-        // 2. Gera o Token JWT
+        // Gera o Token JWT
         String token = tokenService.gerarToken(usuarioAutenticado);
         
-        // 3. Devolve para o React
+        // Devolve para o React
         return ResponseEntity.ok(new LoginResponseDTO(usuarioAutenticado.getNome(), token));
     }
 }

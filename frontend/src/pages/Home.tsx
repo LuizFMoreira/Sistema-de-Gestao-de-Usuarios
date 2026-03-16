@@ -16,25 +16,25 @@ export function Home() {
   const [erro, setErro] = useState('');
   const [mensagemSucesso, setMensagemSucesso] = useState('');
 
-  // Estados: Edição de Perfil
+  // editar o perfil
   const [editandoPerfil, setEditandoPerfil] = useState(false);
   const [editNome, setEditNome] = useState('');
   const [editEmail, setEditEmail] = useState('');
   const [editSenha, setEditSenha] = useState('');
 
-  // Estados: Criação de Novo Usuário
+  // criancao de usuarios
   const [criandoUsuario, setCriandoUsuario] = useState(false);
   const [novoNome, setNovoNome] = useState('');
   const [novoEmail, setNovoEmail] = useState('');
   const [novaSenha, setNovaSenha] = useState('');
 
-  // --- MATEMÁTICA DA FORÇA DA SENHA (EDIÇÃO) ---
+  // força da senha ---
   const editTemTamanho = editSenha.length >= 8;
   const editTemMaiuscula = /[A-Z]/.test(editSenha);
   const editTemNumero = /[0-9]/.test(editSenha);
   const forcaEdit = [editTemTamanho, editTemMaiuscula, editTemNumero].filter(Boolean).length;
 
-  // --- MATEMÁTICA DA FORÇA DA SENHA (CRIAÇÃO) ---
+  // força da senha ---
   const novoTemTamanho = novaSenha.length >= 8;
   const novoTemMaiuscula = /[A-Z]/.test(novaSenha);
   const novoTemNumero = /[0-9]/.test(novaSenha);
@@ -64,7 +64,7 @@ export function Home() {
     }
   }
 
-  // --- FUNÇÕES DE EDIÇÃO DE PERFIL ---
+  //função de edit
   function abrirPainelEdicao() {
     setEditNome(userName);
     setEditEmail(''); 
@@ -100,7 +100,7 @@ export function Home() {
     }
   }
 
-  // --- FUNÇÕES DE CRIAÇÃO DE NOVO USUÁRIO ---
+  // --- função para criar novo usuario ---
   function abrirPainelCriacao() {
     setNovoNome(''); setNovoEmail(''); setNovaSenha('');
     setMensagemSucesso(''); setErro(''); setEditandoPerfil(false);
@@ -256,7 +256,7 @@ export function Home() {
         </div>
       )}
 
-      {/* Tabela */}
+      {}
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md">
         <h2 className="text-xl font-bold text-slate-800 mb-4">Usuários Cadastrados no Sistema</h2>
         <div className="overflow-x-auto">

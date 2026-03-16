@@ -17,15 +17,15 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    // criei essa variável pra puxar o filtro de segurança (meu porteiro) que eu fiz
+    // criei essa variável pra puxar o filtro de segurança
     private final SecurityFilter securityFilter;
 
-    // injetando via construtor (anotei que o professor disse que é melhor que usar @Autowired)
+    // injetando via construtor 
     public SecurityConfig(SecurityFilter securityFilter) {
         this.securityFilter = securityFilter;
     }
 
-    @Bean // tinha um @Bean duplicado aqui antes, já tirei pra não dar erro de compilação
+    @Bean 
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -38,7 +38,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         
-                        // o resto todo tem que ter o token JWT pra acessar
+                        // o resto todo tem que ter o token pra acessar
                         .anyRequest().authenticated()
                 )
                 // coloquei meu filtro pra rodar ANTES do filtro padrão do spring pra checar o token logo de cara
