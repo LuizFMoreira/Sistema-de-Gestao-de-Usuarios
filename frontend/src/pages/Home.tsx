@@ -22,11 +22,30 @@ export function Home() {
   const [editEmail, setEditEmail] = useState('');
   const [editSenha, setEditSenha] = useState('');
 
-  // Estados: Criação de Novo Usuário (Requisito do Edital)
+  // Estados: Criação de Novo Usuário
   const [criandoUsuario, setCriandoUsuario] = useState(false);
   const [novoNome, setNovoNome] = useState('');
   const [novoEmail, setNovoEmail] = useState('');
   const [novaSenha, setNovaSenha] = useState('');
+
+  // --- MATEMÁTICA DA FORÇA DA SENHA (EDIÇÃO) ---
+  const editTemTamanho = editSenha.length >= 8;
+  const editTemMaiuscula = /[A-Z]/.test(editSenha);
+  const editTemNumero = /[0-9]/.test(editSenha);
+  const forcaEdit = [editTemTamanho, editTemMaiuscula, editTemNumero].filter(Boolean).length;
+
+  // --- MATEMÁTICA DA FORÇA DA SENHA (CRIAÇÃO) ---
+  const novoTemTamanho = novaSenha.length >= 8;
+  const novoTemMaiuscula = /[A-Z]/.test(novaSenha);
+  const novoTemNumero = /[0-9]/.test(novaSenha);
+  const forcaNovo = [novoTemTamanho, novoTemMaiuscula, novoTemNumero].filter(Boolean).length;
+
+  function getCorBarra(forca: number) {
+    if (forca === 0) return 'bg-slate-200';
+    if (forca === 1) return 'bg-red-500 w-1/3';
+    if (forca === 2) return 'bg-yellow-500 w-2/3';
+    return 'bg-green-500 w-full';
+  }
 
   useEffect(() => {
     buscarUsuarios();
@@ -50,17 +69,21 @@ export function Home() {
     setEditNome(userName);
     setEditEmail(''); 
     setEditSenha('');
-    setMensagemSucesso('');
-    setErro('');
-    setCriandoUsuario(false); // Fecha o outro painel se estiver aberto
+    setMensagemSucesso(''); setErro(''); setCriandoUsuario(false);
     setEditandoPerfil(true);
   }
 
   async function handleAtualizarPerfil(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setErro(''); setMensagemSucesso('');
-    const token = localStorage.getItem('@App:token');
+    
+    // Trava: se ele digitou uma senha e ela for fraca, bloqueia.
+    if (editSenha.length > 0 && forcaEdit < 3) {
+      setErro('A nova senha não atende aos requisitos de segurança.');
+      return;
+    }
 
+    const token = localStorage.getItem('@App:token');
     try {
       const response = await api.put('/usuarios/perfil', {
         nome: editNome, email: editEmail, senha: editSenha
@@ -79,12 +102,8 @@ export function Home() {
 
   // --- FUNÇÕES DE CRIAÇÃO DE NOVO USUÁRIO ---
   function abrirPainelCriacao() {
-    setNovoNome('');
-    setNovoEmail('');
-    setNovaSenha('');
-    setMensagemSucesso('');
-    setErro('');
-    setEditandoPerfil(false); // Fecha o outro painel se estiver aberto
+    setNovoNome(''); setNovoEmail(''); setNovaSenha('');
+    setMensagemSucesso(''); setErro(''); setEditandoPerfil(false);
     setCriandoUsuario(true);
   }
 
@@ -92,15 +111,20 @@ export function Home() {
     e.preventDefault();
     setErro(''); setMensagemSucesso('');
     
+    // Trava de segurança da senha
+    if (forcaNovo < 3) {
+      setErro('A senha do novo usuário não atende aos requisitos.');
+      return;
+    }
+
     try {
-      // Faz o POST para a rota de cadastro que já criamos no Java
       await api.post('/usuarios', {
         nome: novoNome, email: novoEmail, senha: novaSenha
       });
 
       setCriandoUsuario(false);
       setMensagemSucesso('Novo usuário adicionado com sucesso!');
-      buscarUsuarios(); // Atualiza a tabela na hora
+      buscarUsuarios();
     } catch (error: any) {
       setErro(error.response?.data?.erro || error.response?.data?.message || 'Erro ao criar usuário.');
     }
@@ -157,9 +181,29 @@ export function Home() {
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Nova Senha (opcional)</label>
               <input type="password" value={editSenha} onChange={(e) => setEditSenha(e.target.value)} className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Deixe em branco para manter a atual" />
+              
+              {/* Barra de Força - Edição */}
+              {editSenha.length > 0 && (
+                <div className="mt-3">
+                  <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                    <div className={`h-full transition-all duration-300 ${getCorBarra(forcaEdit)}`}></div>
+                  </div>
+                  <ul className="mt-2 text-xs text-slate-500 flex flex-col gap-1">
+                    <li className={editTemTamanho ? "text-green-600 font-medium" : ""}>{editTemTamanho ? "✓" : "○"} Mínimo de 8 caracteres</li>
+                    <li className={editTemMaiuscula ? "text-green-600 font-medium" : ""}>{editTemMaiuscula ? "✓" : "○"} Pelo menos uma letra maiúscula</li>
+                    <li className={editTemNumero ? "text-green-600 font-medium" : ""}>{editTemNumero ? "✓" : "○"} Pelo menos um número</li>
+                  </ul>
+                </div>
+              )}
             </div>
-            {erro && editandoPerfil && <p className="text-red-500 text-sm">{erro}</p>}
-            <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded-lg font-bold hover:bg-blue-700 transition-colors mt-2">Salvar Alterações</button>
+            {erro && editandoPerfil && <p className="text-red-500 text-sm font-medium bg-red-50 p-2 rounded">{erro}</p>}
+            <button 
+              type="submit" 
+              disabled={editSenha.length > 0 && forcaEdit < 3}
+              className={`w-full p-3 rounded-lg font-bold transition-colors mt-2 ${editSenha.length > 0 && forcaEdit < 3 ? 'bg-slate-300 text-slate-500 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+            >
+              Salvar Alterações
+            </button>
           </form>
         </div>
       )}
@@ -185,9 +229,29 @@ export function Home() {
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Senha Provisória</label>
               <input type="password" required value={novaSenha} onChange={(e) => setNovaSenha(e.target.value)} className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none" placeholder="Crie uma senha para o usuário" />
+              
+              {/* Barra de Força - Novo Usuário */}
+              {novaSenha.length > 0 && (
+                <div className="mt-3">
+                  <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                    <div className={`h-full transition-all duration-300 ${getCorBarra(forcaNovo)}`}></div>
+                  </div>
+                  <ul className="mt-2 text-xs text-slate-500 flex flex-col gap-1">
+                    <li className={novoTemTamanho ? "text-green-600 font-medium" : ""}>{novoTemTamanho ? "✓" : "○"} Mínimo de 8 caracteres</li>
+                    <li className={novoTemMaiuscula ? "text-green-600 font-medium" : ""}>{novoTemMaiuscula ? "✓" : "○"} Pelo menos uma letra maiúscula</li>
+                    <li className={novoTemNumero ? "text-green-600 font-medium" : ""}>{novoTemNumero ? "✓" : "○"} Pelo menos um número</li>
+                  </ul>
+                </div>
+              )}
             </div>
-            {erro && criandoUsuario && <p className="text-red-500 text-sm">{erro}</p>}
-            <button type="submit" className="w-full bg-green-600 text-white p-3 rounded-lg font-bold hover:bg-green-700 transition-colors mt-2">Adicionar ao Sistema</button>
+            {erro && criandoUsuario && <p className="text-red-500 text-sm font-medium bg-red-50 p-2 rounded">{erro}</p>}
+            <button 
+              type="submit" 
+              disabled={forcaNovo < 3}
+              className={`w-full p-3 rounded-lg font-bold transition-colors mt-2 ${forcaNovo < 3 ? 'bg-slate-300 text-slate-500 cursor-not-allowed' : 'bg-green-600 text-white hover:bg-green-700'}`}
+            >
+              Adicionar ao Sistema
+            </button>
           </form>
         </div>
       )}

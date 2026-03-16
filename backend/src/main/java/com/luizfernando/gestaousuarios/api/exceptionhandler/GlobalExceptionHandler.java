@@ -15,9 +15,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRegraDeNegocioException(RuntimeException ex) {
         Map<String, String> resposta = new HashMap<>();
-        resposta.put("erro", ex.getMessage()); // Ex: "Este e-mail já está cadastrado no sistema."
+        resposta.put("erro", ex.getMessage()); //mensagem padrão de email cadastrado, senha invalida e etc...
         
-        // Devolve o status 400 (Bad Request) indicando que o erro foi nos dados enviados pelo usuário
+        // Status de 400 erros de validação, mostrando a mensagem de erro, e que o erro foi nos dados enviados pelo usuário
+    
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resposta);
     }
 }
