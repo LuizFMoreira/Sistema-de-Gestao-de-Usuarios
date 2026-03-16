@@ -1,10 +1,12 @@
 package com.luizfernando.gestaousuarios.api.controller;
 
+import com.luizfernando.gestaousuarios.api.dto.AtualizarUsuarioDTO; // <-- não esqueça que precisamos deste DTO criado
 import com.luizfernando.gestaousuarios.api.dto.UsuarioRequestDTO;
 import com.luizfernando.gestaousuarios.domain.model.Usuario;
 import com.luizfernando.gestaousuarios.domain.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder; // <-- import para pegar o usuário logado
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,5 +37,24 @@ public class UsuarioController {
     @GetMapping
     public ResponseEntity<List<Usuario>> listarUsuarios() {
         return ResponseEntity.ok(usuarioService.listarTodos());
+    }
+
+    // Rota pra pessoa atualizar os PRÓPRIOS dados. (mapeamento)
+    @PutMapping("/perfil")
+    public ResponseEntity<Usuario> atualizarMeuPerfil(@RequestBody AtualizarUsuarioDTO dto) {
+        
+        // puxando os dados do usuário que o meu SecurityFilter validou no token JWT
+        Usuario usuarioLogado = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String emailLogado = usuarioLogado.getEmail();
+
+        // enviado para o service
+        Usuario usuarioAtualizado = usuarioService.atualizarPerfil(
+                emailLogado, 
+                dto.nome(), 
+                dto.email(), 
+                dto.senha()
+        );
+
+        return ResponseEntity.ok(usuarioAtualizado);
     }
 }

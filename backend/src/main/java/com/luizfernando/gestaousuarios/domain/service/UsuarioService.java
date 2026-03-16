@@ -41,4 +41,29 @@ public class UsuarioService {
     public List<Usuario> listarTodos() {
         return usuarioRepository.findAll();
     }
+
+    // método para o usuário atualizar o próprio perfil (OBRIGATORIO)
+    public Usuario atualizarPerfil(String emailLogado, String novoNome, String novoEmail, String novaSenha) {
+        
+        // busca que m é o dono do token no banco de dados (bd)
+        Usuario usuario = usuarioRepository.findByEmail(emailLogado)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+
+        // trava: se ele quer mudar o e-mail, verifico se outra pessoa já não está usando o e-mail novo
+        if (!usuario.getEmail().equals(novoEmail) && usuarioRepository.findByEmail(novoEmail).isPresent()) {
+            throw new RuntimeException("Este novo e-mail já está em uso por outro usuário.");
+        }
+
+        
+        usuario.setNome(novoNome);
+        usuario.setEmail(novoEmail);
+
+        // se ele digitou alguma coisa na senha nova, eu criptografo. Caso o contrario, ficará a senha antiga.
+        if (novaSenha != null && !novaSenha.trim().isEmpty()) {
+            usuario.setSenha(passwordEncoder.encode(novaSenha));
+        }
+
+        //Salva no bd e retorna o usuário atualizado
+        return usuarioRepository.save(usuario);
+    }
 }
