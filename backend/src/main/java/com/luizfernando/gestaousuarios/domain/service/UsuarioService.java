@@ -58,7 +58,7 @@ public class UsuarioService {
         usuario.setNome(novoNome);
         usuario.setEmail(novoEmail);
 
-        // se ele digitou alguma coisa na senha nova, eu criptografo. Caso o contrario, ficará a senha antiga.
+        // se ele digitou alguma coisa na senha nova, eu criptografo e slv. Caso o contrario, vai ficar a senha antiga.
         if (novaSenha != null && !novaSenha.trim().isEmpty()) {
             usuario.setSenha(passwordEncoder.encode(novaSenha));
         }

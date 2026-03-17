@@ -1,12 +1,12 @@
 package com.luizfernando.gestaousuarios.api.controller;
 
-import com.luizfernando.gestaousuarios.api.dto.AtualizarUsuarioDTO; // <-- não esqueça que precisamos deste DTO criado
+import com.luizfernando.gestaousuarios.api.dto.AtualizarUsuarioDTO; 
 import com.luizfernando.gestaousuarios.api.dto.UsuarioRequestDTO;
 import com.luizfernando.gestaousuarios.domain.model.Usuario;
 import com.luizfernando.gestaousuarios.domain.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder; // <-- import para pegar o usuário logado
+import org.springframework.security.core.context.SecurityContextHolder; 
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
