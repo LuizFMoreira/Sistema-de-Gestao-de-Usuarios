@@ -66,4 +66,10 @@ public class UsuarioService {
         //Salva no bd e retorna o usuário atualizado
         return usuarioRepository.save(usuario);
     }
+    public void deletarUsuario(Long id) {
+        if (!usuarioRepository.existsById(id)) {
+            throw new RuntimeException("Utilizador não encontrado.");
+        }
+        usuarioRepository.deleteById(id);
+    }
 }

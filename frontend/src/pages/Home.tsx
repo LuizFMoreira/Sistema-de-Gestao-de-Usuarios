@@ -23,7 +23,7 @@ export function Home() {
   const [editSenha, setEditSenha] = useState('');
   const [mostrarEditSenha, setMostrarEditSenha] = useState(false);
 
-  // Estados: Criação de Novo Usuário
+  // Estados: Criação de Novo Utilizador
   const [criandoUsuario, setCriandoUsuario] = useState(false);
   const [novoNome, setNovoNome] = useState('');
   const [novoEmail, setNovoEmail] = useState('');
@@ -76,7 +76,7 @@ export function Home() {
     setEditNome(userName);
     setEditEmail(''); 
     setEditSenha('');
-    setMostrarEditSenha(false); // Reseta o olhinho
+    setMostrarEditSenha(false);
     setMensagemSucesso(''); setErro(''); setCriandoUsuario(false);
     setEditandoPerfil(true);
   }
@@ -118,10 +118,10 @@ export function Home() {
     }
   }
 
-  // --- Funções de Criação de Novo Usuário ---
+  // --- Funções de Criação de Novo Utilizador ---
   function abrirPainelCriacao() {
     setNovoNome(''); setNovoEmail(''); setNovaSenha('');
-    setMostrarNovaSenha(false); // Reseta o olhinho
+    setMostrarNovaSenha(false);
     setMensagemSucesso(''); setErro(''); setEditandoPerfil(false);
     setCriandoUsuario(true);
   }
@@ -131,7 +131,7 @@ export function Home() {
     setErro(''); setMensagemSucesso('');
     
     if (forcaNovo < 3) {
-      setErro('A senha do novo usuário não atende aos requisitos.');
+      setErro('A senha do novo utilizador não atende aos requisitos.');
       return;
     }
 
@@ -148,7 +148,7 @@ export function Home() {
       }, { headers: { Authorization: `Bearer ${token}` }});
 
       setCriandoUsuario(false);
-      setMensagemSucesso('Novo usuário adicionado com sucesso!');
+      setMensagemSucesso('Novo utilizador adicionado com sucesso!');
       buscarUsuarios();
     } catch (error: any) {
       if (error.response?.status === 401 || error.response?.status === 403) {
@@ -156,7 +156,36 @@ export function Home() {
         navigate('/login');
         return;
       }
-      setErro(error.response?.data?.erro || error.response?.data?.message || 'Erro ao criar usuário.');
+      setErro(error.response?.data?.erro || error.response?.data?.message || 'Erro ao criar utilizador.');
+    }
+  }
+
+  // --- Função de Exclusão de Utilizador ---
+  async function handleDeletarUsuario(id: number, nome: string) {
+    // Barreira de segurança UX: Confirmação antes de apagar
+    const confirmacao = window.confirm(`Tem a certeza absoluta que deseja excluir o utilizador "${nome}"? Esta ação é irreversível.`);
+    if (!confirmacao) return;
+
+    const token = localStorage.getItem('@App:token');
+    if (!token) {
+      localStorage.clear();
+      navigate('/login');
+      return;
+    }
+
+    try {
+      await api.delete(`/usuarios/${id}`, { 
+        headers: { Authorization: `Bearer ${token}` } 
+      });
+      setMensagemSucesso(`Utilizador ${nome} excluído com sucesso!`);
+      buscarUsuarios(); // Atualiza a tabela imediatamente
+    } catch (error: any) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        localStorage.clear();
+        navigate('/login');
+        return;
+      }
+      setErro(error.response?.data?.erro || 'Erro ao excluir o utilizador.');
     }
   }
 
@@ -175,7 +204,7 @@ export function Home() {
         </div>
         <div className="flex gap-3">
           <button onClick={abrirPainelCriacao} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium shadow-md">
-            + Novo Usuário
+            + Novo Utilizador
           </button>
           <button onClick={abrirPainelEdicao} className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors font-medium">
             Editar Perfil
@@ -256,17 +285,17 @@ export function Home() {
         </div>
       )}
 
-      {/* Formulário: Adicionar Novo Usuário */}
+      {/* Formulário: Adicionar Novo Utilizador */}
       {criandoUsuario && (
         <div className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md mb-8 border-t-4 border-green-500">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-slate-800">Cadastrar Novo Usuário</h2>
+            <h2 className="text-xl font-bold text-slate-800">Cadastrar Novo Utilizador</h2>
             <button onClick={() => setCriandoUsuario(false)} className="text-slate-400 hover:text-slate-600">Cancelar</button>
           </div>
           <form onSubmit={handleCriarUsuario} className="flex flex-col gap-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Nome do Usuário</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Nome do Utilizador</label>
                 <input type="text" required value={novoNome} onChange={(e) => setNovoNome(e.target.value)} className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none" placeholder="Ex: Maria" />
               </div>
               <div>
@@ -276,13 +305,12 @@ export function Home() {
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Senha Provisória</label>
-              
               <div className="relative">
                 <input 
                   type={mostrarNovaSenha ? "text" : "password"} required 
                   value={novaSenha} onChange={(e) => setNovaSenha(e.target.value)} 
                   className="w-full p-3 pr-12 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none" 
-                  placeholder="Crie uma senha para o usuário" 
+                  placeholder="Crie uma senha para o utilizador" 
                 />
                 <button 
                   type="button"
@@ -297,7 +325,7 @@ export function Home() {
                 </button>
               </div>
               
-              {/* Barra de Força - Novo Usuário */}
+              {/* Barra de Força - Novo Utilizador */}
               {novaSenha.length > 0 && (
                 <div className="mt-3">
                   <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
@@ -323,9 +351,9 @@ export function Home() {
         </div>
       )}
 
-      {/* Tabela de Usuários */}
+      {/* Tabela de Utilizadores */}
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md">
-        <h2 className="text-xl font-bold text-slate-800 mb-4">Usuários Cadastrados no Sistema</h2>
+        <h2 className="text-xl font-bold text-slate-800 mb-4">Utilizadores Registados no Sistema</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -333,6 +361,7 @@ export function Home() {
                 <th className="p-3 font-semibold text-slate-700">ID</th>
                 <th className="p-3 font-semibold text-slate-700">Nome</th>
                 <th className="p-3 font-semibold text-slate-700">E-mail</th>
+                <th className="p-3 font-semibold text-slate-700 text-right">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -341,6 +370,18 @@ export function Home() {
                   <td className="p-3 text-slate-600">#{user.id}</td>
                   <td className="p-3 text-slate-800 font-medium">{user.nome}</td>
                   <td className="p-3 text-slate-600">{user.email}</td>
+                  <td className="p-3 text-right">
+                    <button 
+                      onClick={() => handleDeletarUsuario(user.id, user.nome)}
+                      className="text-red-500 hover:text-red-700 font-medium transition-colors flex items-center justify-end w-full gap-1"
+                      title="Excluir utilizador"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                      </svg>
+                      Excluir
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
