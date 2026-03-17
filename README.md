@@ -105,3 +105,5 @@ spring.datasource.url=jdbc:postgresql://localhost:5432/gestao_usuarios
 spring.datasource.username=postgres
 spring.datasource.password=12345 # <- Mude aqui se a sua senha do Postgres for outra
 server.port=8081
+
+2. Front-end (React, Vite)
