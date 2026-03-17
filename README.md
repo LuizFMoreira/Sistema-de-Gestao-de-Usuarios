@@ -128,14 +128,14 @@ cd backend
 ./mvnw clean install
 (No Windows, utilize mvnw.cmd clean install)
 
-🗄️ Inicialização do Banco de Dados (PostgreSQL)
+## 🗄️ Inicialização do Banco de Dados (PostgreSQL)
 Abra a sua ferramenta de banco de dados (pgAdmin ou DBeaver) e crie um banco de dados vazio utilizando o comando SQL abaixo:
 
 SQL
 CREATE DATABASE gestao_usuarios;
 Nota: Graças à configuração ddl-auto=update do Spring Boot, você não precisa criar tabelas manualmente. O Java criará as tabelas de usuários assim que a aplicação for iniciada.
 
-🚀 Como Executar a Aplicação
+## 🚀 Como Executar a Aplicação
 Terminal 1: Back-end (Spring Boot)
 Na pasta backend, inicie o servidor da API:
 
@@ -170,7 +170,7 @@ docker-compose up -d (Sobe o banco em segundo plano).
 
 Execute o Front-end e o Back-end nos passos detalhados acima.
 
-📱 Demonstração
+## 📱 Demonstração
 Aplicativo Mobile
 Embora o projeto seja uma Aplicação Web (e não um aplicativo nativo Android/iOS), toda a interface (Tailwind CSS) é 100% responsiva, adaptando menus, tabelas de listagem e botões de ação para a tela de dispositivos móveis.
 
@@ -179,16 +179,7 @@ Tela de Acesso: Layout limpo com feedback visual em tempo real.
 
 Dashboard: Tabela administrativa para controle geral.
 
-📱 Demonstração
-Aplicativo Mobile
-Embora o projeto seja uma Aplicação Web (e não um aplicativo nativo Android/iOS), toda a interface (Tailwind CSS) é 100% responsiva, adaptando menus, tabelas de listagem e botões de ação para a tela de dispositivos móveis.
-
-Aplicação Web
-Tela de Acesso: Layout limpo com feedback visual em tempo real.
-
-Dashboard: Tabela administrativa para controle geral.
-
-💻 Exemplo de saída no Terminal (para Back-end, API, CLI)
+## 💻 Exemplo de saída no Terminal (para Back-end, API, CLI)
 Ao iniciar corretamente, o Spring Boot imprimirá no terminal logs semelhantes a este:
 ```
 .   ____          _            __ _ _
@@ -204,9 +195,10 @@ Ao iniciar corretamente, o Spring Boot imprimirá no terminal logs semelhantes a
 2026-03-17 12:00:03.100  INFO 12345 --- [main] c.l.gestaousuarios.Application         : Started Application in 3.5 seconds
 ```
 
-✍️ Autores
+## ✍️ Autores
 Luiz Fernando Batista Moreira - Desenvolvimento Full-Stack - GitHub
-🙌 Agradecimentos
+
+## 🙌 Agradecimentos
 Agradecimentos especiais aos instrutores e avaliadores que inspiraram este desafio técnico, permitindo colocar em prática os mais exigentes conceitos de engenharia de software, Clean Architecture e UX.
 
 
