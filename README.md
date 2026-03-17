@@ -110,16 +110,6 @@ server.port=8081
 ```
 
 ### 2. Front-end (React, Vite)
-Crie um arquivo chamado .env na raiz da pasta frontend para apontar o React para o nosso servidor Java:
-
-Snippet de código
-VITE_API_URL=http://localhost:8081
-3. Exemplos de Variáveis de Ambiente na Vercel
-Caso o projeto seja hospedado na Vercel (serviço de nuvem), o painel exigirá a mesma configuração na aba Environment Variables:
-
-Key: VITE_API_URL
-
-Value: https://api-gestao-usuarios.onrender.com (Exemplo de URL do back-end em produção)
 
 📦 Instalação de Dependências
 Abra o terminal na raiz do projeto clonado.
