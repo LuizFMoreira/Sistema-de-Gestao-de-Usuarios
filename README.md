@@ -73,7 +73,7 @@ Nenhuma sessão fica presa na memória do servidor, tornando a aplicação altam
 ### Pré-requisitos
 Para rodar este projeto na sua máquina, você precisará ter instalado:
 * **Node.js:** [Baixe aqui](https://nodejs.org/)
-* **Java JDK 21:** [Baixe aqui](https://adoptium.net/)
+* **Java JDK 21:** [Baixe aqui](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
 * **PostgreSQL:** [Baixe aqui](https://www.postgresql.org/download/)
 
 ### 1. Inicialização do Banco de Dados (PostgreSQL)
