@@ -114,6 +114,7 @@ Abra um novo terminal, entre na pasta frontend e rode os comandos abaixo para ba
 Bash
 cd frontend
 npm install
+npm install react-router-dom
 npm run dev
 ```
 Acesse http://localhost:5173 no seu navegador para utilizar o sistema.
